@@ -7,6 +7,8 @@ export const ExecuteCommand = (
   switch (command) {
     case "clear":
       return Promise.resolve();
+    case "ok":
+      return Promise.resolve();
     default:
       return Promise.reject(ErrorCommand(command));
   }

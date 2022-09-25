@@ -11,9 +11,10 @@ type Props = {};
 
 const Wrap = styled.div`
   @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap");
-  position: relative;
+  position: absolute;
   background-color: black;
   width: 100%;
+  bottom: 0px;
   font-size: 18px;
   color: #12c063;
   font-weight: 500;
@@ -37,15 +38,16 @@ const Prefix = styled.div`
   position: relative;
   background-color: black;
   font-weight: 500;
+  line-height: 20px;
   font-family: "Raleway", sans-serif;
   font-size: 18px;
   width: 100%;
-  height: 1000px;
+  height: 100%;
   color: #12c063;
 `;
 
 const Login = (props: Props) => {
-  const [height, setHeight] = useState(document.documentElement.clientHeight);
+  const [top, setTop] = useState(0);
   const [content, setContent] = useState([
     ["System: ", "Initialization complete"],
     ["System: ", "Welcome to MyOS ! ^v^"],
@@ -68,9 +70,10 @@ const Login = (props: Props) => {
           .then(
             (res) => {
               if (currentInput === "clear") {
-                document.documentElement.scrollTop += (
-                  offsetTop as any
-                ).current.offsetTop;
+                // setTop(-(offsetTop as any).current.offsetTop);
+                window.scrollTo(0, (offsetTop as any).current.offsetTop + 42);
+              } else {
+                document.documentElement.scrollTop -= 21;
               }
             },
             (rason) => {
@@ -79,6 +82,7 @@ const Login = (props: Props) => {
                 ["Unknown@MyOS: ", currentInput],
                 ["System: ", rason],
               ]);
+              document.documentElement.scrollTop -= 42;
             }
           )
           .finally(() => {
@@ -97,8 +101,12 @@ const Login = (props: Props) => {
     }
   };
 
+  useEffect(() => {
+    setTop(0);
+  }, []);
+
   return (
-    <Wrap style={{ height: height + "px" }}>
+    <Wrap style={{ top: top }}>
       {content.map((item, index) => {
         return (
           <div

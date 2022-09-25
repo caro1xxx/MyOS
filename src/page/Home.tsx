@@ -7,10 +7,10 @@ const Home = (props: Props) => {
   let navigate = useNavigate();
   useEffect(() => {
     if (Cookies.get("token") === undefined) {
-      navigate("/login");
+      // navigate("/login");
     }
   });
-  return <div>Home</div>;
+  return <div style={{ color: "#fff" }}>Home</div>;
 };
 
 export default Home;

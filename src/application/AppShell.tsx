@@ -16,13 +16,13 @@ const Wrap = styled.div`
 
 const Body = styled.div``;
 
-const AppFile = (props: Props) => {
+const AppShell = (props: Props) => {
   return (
     <Wrap style={{ borderRadius: props.borderRadius }}>
       {/* <Body>{stack}</Body> */}
-      <div>file</div>
+      <div>shell</div>
     </Wrap>
   );
 };
 
-export default withAppHandle(AppFile);
+export default withAppHandle(AppShell);

@@ -1,4 +1,6 @@
 import React, { useState, useCallback } from "react";
+import { useAppDispatch } from "../hooks";
+import { increment } from "../store/execute";
 type Props = {
   zoomAnimation: string;
   applicationCode: number;
@@ -7,6 +9,7 @@ type Props = {
 const withApplication = (WapperComponent: (props: Props) => JSX.Element) => {
   const Application = (props: Props) => {
     const MemoWapperComponent = React.memo(WapperComponent);
+    const dispatch = useAppDispatch();
 
     const [applicationStyle, setApplicationStyle] = useState(
       props.zoomAnimation
@@ -20,7 +23,7 @@ const withApplication = (WapperComponent: (props: Props) => JSX.Element) => {
     }, []);
 
     const executeApplication = useCallback(() => {
-      console.log(props.applicationCode);
+      dispatch(increment(props.applicationCode));
     }, []);
 
     return (

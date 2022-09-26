@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import AppFile from "../application/AppFile";
+import AppShell from "../application/AppShell";
+import { useAppSelector } from "../hooks";
 type Props = {};
 const Wrap = styled.div`
   /* background-color: #cacacacf; */
@@ -12,10 +14,17 @@ const Wrap = styled.div`
   padding: 2px;
 `;
 const ApplicationDisplayArea = (props: Props) => {
-  const MemoAppFile = React.memo(AppFile);
+  // const MemoAppFile = React.memo(AppFile);
+  const stack = useAppSelector((state) => state.actuators.value);
   return (
     <Wrap>
-      <MemoAppFile></MemoAppFile>
+      {stack.map((item, index) => {
+        return item === 0 ? (
+          <AppFile></AppFile>
+        ) : item === 1 ? (
+          <AppShell></AppShell>
+        ) : null;
+      })}
     </Wrap>
   );
 };

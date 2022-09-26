@@ -24,6 +24,7 @@ const NavBar = (props: Props) => {
   const MemoFile = React.memo(File);
   const MemoSetting = React.memo(Setting);
   const MemoShell = React.memo(Shell);
+
   return (
     <Wrap>
       <MemoFile zoomAnimation={"normal"} applicationCode={0}></MemoFile>

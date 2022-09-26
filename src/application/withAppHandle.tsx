@@ -59,6 +59,8 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
      * 不能将File进行memo,因为File的props会随
      * 着鼠标移入移除改变,如果缓存了就失效了
      */
+    const MemoWapperComponent = React.memo(WapperComponent);
+
     const [attribute, setAttribute] = useState({
       initHeight: 300,
       opacity: "none",
@@ -82,7 +84,12 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
     };
 
     return (
-      <Wrap style={{ height: attribute.initHeight, position: "relative" }}>
+      <Wrap
+        style={{
+          height: attribute.initHeight,
+          position: "absolute",
+        }}
+      >
         <Top
           onMouseEnter={MouseEnterTop}
           onMouseLeave={MouseLeaveTop}
@@ -92,9 +99,9 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           <YellowTopBlock></YellowTopBlock>
           <GreenTopBlock></GreenTopBlock>
         </Top>
-        <WapperComponent
+        <MemoWapperComponent
           borderRadius={attribute.borderRadius}
-        ></WapperComponent>
+        ></MemoWapperComponent>
       </Wrap>
     );
   };

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import withAppHandle from "./withAppHandle";
 type Props = {
   borderRadius: string;
+  zIndex: number;
 };
 
 const Wrap = styled.div`
@@ -19,8 +20,12 @@ const Body = styled.div``;
 
 const AppFile = (props: Props) => {
   return (
-    <Wrap style={{ borderRadius: props.borderRadius }}>
-      <Body>file</Body>
+    <Wrap
+      style={{
+        borderRadius: props.borderRadius,
+      }}
+    >
+      <Body>{props.zIndex}</Body>
     </Wrap>
   );
 };

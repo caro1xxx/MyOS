@@ -94,7 +94,6 @@ export const login = (commandSlice: string[]) => {
 };
 
 // 验证密码
-
 export const checkPassword = (password: string) => {
   if (password === "4896") {
     return true;

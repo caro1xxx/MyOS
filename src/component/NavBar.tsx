@@ -27,6 +27,10 @@ const NavBar = (props: Props) => {
 
   return (
     <Wrap>
+      {/* 
+        applicationCode: App code App类型
+        zoomAnimation:鼠标移入移除className
+      */}
       <MemoFile zoomAnimation={"normal"} applicationCode={0}></MemoFile>
       <MemoSetting zoomAnimation={"normal"} applicationCode={1}></MemoSetting>
       <MemoShell zoomAnimation={"normal"} applicationCode={2}></MemoShell>

@@ -1,13 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { changeMarginTopAndLeft, promoteAppToTop } from "../store/execute";
+import { useAppSelector, useAppDispatch } from "../hooks";
 import {
   MouseDownTopHandler,
   MouseUpTopHandler,
   MouseMoveTopHandler,
 } from "../utils/AppDragHandler";
-type Props = {
-  borderRadius: string;
-};
 
 const Wrap = styled.div`
   height: 400px;
@@ -22,7 +21,7 @@ const Top = styled.div`
   padding: 0px 10px;
   height: 25px;
   border-radius: 10px 10px 0px 0px;
-  opacity: 1;
+  opacity: 0;
 `;
 
 const RedTopBlock = styled.div`
@@ -56,48 +55,49 @@ const YellowTopBlock = styled.div`
   border-radius: 100px;
 `;
 
+type Props = {
+  borderRadius: string;
+  zIndex: number;
+};
+
+// 不同App窗口的HOC
 const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
   const ReturnHandleApp = () => {
     const MemoWapperComponent = React.memo(WapperComponent);
-
+    // 获取 App stack中的所有App
+    const ExecuteStack = useAppSelector((state) => state.actuators.value);
+    // App stack大小
+    const ExecuteStackLength = ExecuteStack.length;
+    const dispatch = useAppDispatch();
     // app顶部选项属性
+    /**
+     * 这里初始化App属性的时候需要获取store中的当前的App的样式进行初始化
+     * ExecuteStackLength - 1就是stack中最近打开的App
+     */
     const [attribute, setAttribute] = useState({
-      marginTop: 100,
-      marginLeft: 100,
-      initHeight: 300,
+      marginTop: ExecuteStack[ExecuteStackLength - 1].marginTop,
+      marginLeft: ExecuteStack[ExecuteStackLength - 1].marginLeft,
+      initHeight: ExecuteStack[ExecuteStackLength - 1].height,
+      // zIndex用于控制App的显示层级
+      zIndex: ExecuteStack[ExecuteStackLength - 1].zIndex,
+      // opacity:用于控制App top options的显示
       opacity: "none",
       borderRadius: "10px",
     });
-
-    // mouse enter options
-    // const MouseEnterTop = async (
-    //   e: React.MouseEvent<HTMLDivElement, MouseEvent>
-    // ) => {
-    //   const attr = { ...attribute };
-    //   setAttribute({
-    //     marginTop: attr.marginTop,
-    //     marginLeft: attr.marginLeft,
-    //     initHeight: attr.initHeight,
-    //     opacity: "1",
-    //     borderRadius: "0px 0px 10px 10px",
-    //   });
-    //   await MouseEnterTopHandler([e.clientX, e.clientY]);
-    //   return false;
-    // };
 
     // mouse down options
     const MouseDownTop = async (
       e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
-      const attr = { ...attribute };
       setAttribute({
-        marginTop: attr.marginTop,
-        marginLeft: attr.marginLeft,
-        initHeight: attr.initHeight,
+        marginTop: attribute.marginTop,
+        marginLeft: attribute.marginLeft,
+        initHeight: attribute.initHeight,
+        zIndex: attribute.zIndex,
         opacity: "1",
         borderRadius: "0px 0px 10px 10px",
       });
-      await MouseDownTopHandler(attr, [e.pageX, e.pageY]);
+      await MouseDownTopHandler(attribute, [e.pageX, e.pageY]);
       return false;
     };
 
@@ -105,15 +105,29 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
     const MouseMoveTop = async (
       e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
-      const attr = { ...attribute };
       setAttribute({
-        marginTop: attr.marginTop,
-        marginLeft: attr.marginLeft,
-        initHeight: attr.initHeight,
+        marginTop: attribute.marginTop,
+        marginLeft: attribute.marginLeft,
+        initHeight: attribute.initHeight,
+        zIndex: attribute.zIndex,
         opacity: "1",
         borderRadius: "0px 0px 10px 10px",
       });
-      await MouseMoveTopHandler(attr, setAttribute, [e.pageX, e.pageY]);
+      // 这一步执行返回的结果就是鼠标move之后的marginLeft和marginTop,我们需要提交到store中
+      let res = await MouseMoveTopHandler(
+        attribute,
+        setAttribute,
+        [e.pageX, e.pageY],
+        ExecuteStack[ExecuteStackLength - 1].id
+      );
+      // 提交
+      dispatch(
+        changeMarginTopAndLeft({
+          left: res[0],
+          top: res[1],
+          id: res[2], // App唯一标识
+        })
+      );
       return false;
     };
 
@@ -130,24 +144,41 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
       e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
       await MouseUpTopHandler();
-      const attr = { ...attribute };
       setAttribute({
-        marginTop: attr.marginTop,
-        marginLeft: attr.marginLeft,
-        initHeight: attr.initHeight,
+        marginTop: attribute.marginTop,
+        marginLeft: attribute.marginLeft,
+        initHeight: attribute.initHeight,
+        zIndex: attribute.zIndex,
         opacity: "0",
         borderRadius: "10px",
       });
       return false;
     };
 
+    // 点击App body,将当前App的zindex提升1
+    const clickApp = () => {
+      const id = ExecuteStack[ExecuteStackLength - 1].id;
+      setAttribute({
+        marginTop: attribute.marginTop,
+        marginLeft: attribute.marginLeft,
+        initHeight: attribute.initHeight,
+        zIndex: ExecuteStack[ExecuteStackLength - 1].zIndex + 1,
+        opacity: "0",
+        borderRadius: "10px",
+      });
+      dispatch(promoteAppToTop(id));
+      return false;
+    };
+
     return (
       <Wrap
+        onClick={clickApp}
         style={{
-          height: attribute.initHeight,
           position: "absolute",
+          height: attribute.initHeight,
           marginTop: attribute.marginTop + "px",
           marginLeft: attribute.marginLeft + "px",
+          zIndex: attribute.zIndex,
         }}
       >
         <Top
@@ -157,12 +188,15 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           onMouseMove={(e) => MouseMoveTop(e)}
           style={{ opacity: attribute.opacity }}
         >
+          {/* 红黄蓝options */}
           <RedTopBlock></RedTopBlock>
           <YellowTopBlock></YellowTopBlock>
           <GreenTopBlock></GreenTopBlock>
         </Top>
         <MemoWapperComponent
+          // 这里的圆角是为了控制当App top options显示时,App body就应该取消左上和右上的圆角
           borderRadius={attribute.borderRadius}
+          zIndex={attribute.zIndex}
         ></MemoWapperComponent>
       </Wrap>
     );

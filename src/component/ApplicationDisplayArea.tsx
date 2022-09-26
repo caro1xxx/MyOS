@@ -3,7 +3,6 @@ import styled from "styled-components";
 import AppFile from "../application/AppFile";
 import AppShell from "../application/AppShell";
 import { useAppSelector } from "../hooks";
-import { nanoid } from "nanoid";
 type Props = {};
 const Wrap = styled.div`
   /* background-color: #cacacacf; */
@@ -15,15 +14,23 @@ const Wrap = styled.div`
   padding: 2px;
 `;
 const ApplicationDisplayArea = (props: Props) => {
-  // const MemoAppFile = React.memo(AppFile);
-  const stack = useAppSelector((state) => state.actuators.value);
+  // 获取App stack中的所有项
+  const ExecuteStack = useAppSelector((state) => state.actuators.value);
   return (
     <Wrap>
-      {stack.map((item, index) => {
-        return item === 0 ? (
-          <AppFile key={nanoid()}></AppFile>
-        ) : item === 1 ? (
-          <AppShell key={nanoid()}></AppShell>
+      {/* 渲染所以项 */}
+      {ExecuteStack.map((item, index) => {
+        // item.code:每个App的唯一标识(不是App code)
+        /**
+         * 0 :文件夹
+         * 1 :设置
+         * 0 :shell
+         * ....
+         */
+        return item.code === 0 ? (
+          <AppFile key={item.id}></AppFile>
+        ) : item.code === 1 ? (
+          <AppShell key={item.id}></AppShell>
         ) : null;
       })}
     </Wrap>

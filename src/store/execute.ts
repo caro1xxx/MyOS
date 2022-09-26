@@ -1,11 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
+import { nanoid } from "nanoid";
 
-interface ExecuteStackState {
-  value: number[];
+interface Item {
+  code: number;
+  id: string;
+  height: number;
+  width: number;
+  marginLeft: number;
+  marginTop: number;
+  zIndex: number;
 }
 
-const initialState: ExecuteStackState = {
+interface init {
+  value: Array<Item>;
+}
+
+const initialState: init = {
   value: [],
 };
 
@@ -13,13 +24,43 @@ export const ExecuteStackHandle = createSlice({
   name: "ExecuteStack",
   initialState,
   reducers: {
-    increment: (state, actions) => {
-      state.value = [...state.value, actions.payload];
-      console.log(state.value);
+    createApp: (state, actions) => {
+      state.value.push({
+        /**
+         * 每一个创建的App的入栈信息
+         */
+        code: actions.payload, //app code
+        id: nanoid(), //app id
+        height: 400, // 初始化高度
+        width: 600, //初始化宽度
+        marginLeft: 100, //初始化左边距
+        marginTop: 100, //初始化上边距
+        zIndex: 10,
+      });
+    },
+    // 提交App的marginTop和marginLeft变化
+    changeMarginTopAndLeft: (state, action) => {
+      const marginTopAndLeft = { ...action.payload };
+      state.value.forEach((item, index) => {
+        if (marginTopAndLeft.id === item.id) {
+          item.marginLeft = marginTopAndLeft.left;
+          item.marginTop = marginTopAndLeft.top;
+        }
+      });
+    },
+    // 提升App 的 z-index,相当于将该id的App置于最顶层
+    promoteAppToTop: (state, action) => {
+      state.value.forEach((item, index) => {
+        if (action.payload.id === item.id) {
+          item.zIndex = 11;
+        }
+        item.zIndex = 10;
+      });
     },
   },
 });
 
-export const { increment } = ExecuteStackHandle.actions;
+export const { createApp, changeMarginTopAndLeft, promoteAppToTop } =
+  ExecuteStackHandle.actions;
 export const selectCount = (state: RootState) => state.actuators.value;
 export default ExecuteStackHandle.reducer;

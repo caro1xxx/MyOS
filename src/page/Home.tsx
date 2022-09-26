@@ -19,6 +19,11 @@ const Wrap = styled.div`
 `;
 
 const Home = (props: Props) => {
+  // memo 优化
+  const MemoApplicationDisplayArea = React.memo(ApplicationDisplatArea);
+  const MemoNavBar = React.memo(NavBar);
+  const MemoBackgroundItem = React.memo(BackgroundItem);
+
   const [renderNumber, setRenderNumber] = useState({
     sumNumber: [0],
   });
@@ -48,11 +53,11 @@ const Home = (props: Props) => {
     <Fragment>
       <Wrap>
         {renderNumber.sumNumber.map((item, index) => {
-          return <BackgroundItem key={nanoid()}></BackgroundItem>;
+          return <MemoBackgroundItem key={nanoid()}></MemoBackgroundItem>;
         })}
       </Wrap>
-      <NavBar></NavBar>
-      <ApplicationDisplatArea></ApplicationDisplatArea>
+      <MemoNavBar></MemoNavBar>
+      <MemoApplicationDisplayArea></MemoApplicationDisplayArea>
     </Fragment>
   );
 };

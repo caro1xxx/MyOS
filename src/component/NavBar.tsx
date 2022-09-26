@@ -20,11 +20,15 @@ const Wrap = styled.div`
 `;
 
 const NavBar = (props: Props) => {
+  // memo 优化组件
+  const MemoFile = React.memo(File);
+  const MemoSetting = React.memo(Setting);
+  const MemoShell = React.memo(Shell);
   return (
     <Wrap>
-      <File zoomAnimation={"normal"} applicationCode={0}></File>
-      <Setting zoomAnimation={"normal"} applicationCode={1}></Setting>
-      <Shell zoomAnimation={"normal"} applicationCode={2}></Shell>
+      <MemoFile zoomAnimation={"normal"} applicationCode={0}></MemoFile>
+      <MemoSetting zoomAnimation={"normal"} applicationCode={1}></MemoSetting>
+      <MemoShell zoomAnimation={"normal"} applicationCode={2}></MemoShell>
     </Wrap>
   );
 };

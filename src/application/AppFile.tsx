@@ -2,19 +2,26 @@ import React from "react";
 import styled from "styled-components";
 import withAppHandle from "./withAppHandle";
 type Props = {
-  initHeight: number;
-  opacity: string;
+  borderRadius: string;
 };
 
 const Wrap = styled.div`
-  background-color: black;
+  background-color: white;
+  color: black;
   width: 100%;
   height: 100%;
   border-radius: 10px;
+  padding: 10px;
 `;
 
-const File = (props: Props) => {
-  return <Wrap>File</Wrap>;
+const Body = styled.div``;
+
+const AppFile = (props: Props) => {
+  return (
+    <Wrap style={{ borderRadius: props.borderRadius }}>
+      <Body>1</Body>
+    </Wrap>
+  );
 };
 
-export default withAppHandle(File);
+export default withAppHandle(AppFile);

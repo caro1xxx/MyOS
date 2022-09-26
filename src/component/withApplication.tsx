@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 type Props = {
   zoomAnimation: string;
   applicationCode: number;
@@ -6,20 +6,22 @@ type Props = {
 
 const withApplication = (WapperComponent: (props: Props) => JSX.Element) => {
   const Application = (props: Props) => {
+    const MemoWapperComponent = React.memo(WapperComponent);
+
     const [applicationStyle, setApplicationStyle] = useState(
       props.zoomAnimation
     );
-    const MouseEnter = () => {
+    const MouseEnter = useCallback(() => {
       setApplicationStyle("zoomIn");
-    };
+    }, []);
 
-    const MouseLeave = () => {
+    const MouseLeave = useCallback(() => {
       setApplicationStyle("restore");
-    };
+    }, []);
 
-    const executeApplication = () => {
+    const executeApplication = useCallback(() => {
       console.log(props.applicationCode);
-    };
+    }, []);
 
     return (
       <div
@@ -28,10 +30,10 @@ const withApplication = (WapperComponent: (props: Props) => JSX.Element) => {
         onClick={executeApplication}
       >
         {
-          <WapperComponent
+          <MemoWapperComponent
             zoomAnimation={applicationStyle}
             applicationCode={props.applicationCode}
-          ></WapperComponent>
+          ></MemoWapperComponent>
         }
       </div>
     );

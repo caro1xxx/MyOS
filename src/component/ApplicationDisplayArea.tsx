@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import File from "../application/AppFile";
+import AppFile from "../application/AppFile";
 type Props = {};
 const Wrap = styled.div`
   /* background-color: #cacacacf; */
@@ -12,18 +12,10 @@ const Wrap = styled.div`
   padding: 2px;
 `;
 const ApplicationDisplayArea = (props: Props) => {
-  const [attribute, setAttribute] = useState({
-    initHeight: 300,
-    opacity: "none",
-  });
-
+  const MemoAppFile = React.memo(AppFile);
   return (
     <Wrap>
-      <File
-        initHeight={attribute.initHeight}
-        opacity={attribute.opacity}
-        setAttribute={setAttribute}
-      ></File>
+      <MemoAppFile></MemoAppFile>
     </Wrap>
   );
 };

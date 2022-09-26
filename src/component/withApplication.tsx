@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-
 type Props = {
   zoomAnimation: string;
+  applicationCode: number;
 };
 
 const withApplication = (WapperComponent: (props: Props) => JSX.Element) => {
@@ -17,9 +17,22 @@ const withApplication = (WapperComponent: (props: Props) => JSX.Element) => {
       setApplicationStyle("restore");
     };
 
+    const executeApplication = () => {
+      console.log(props.applicationCode);
+    };
+
     return (
-      <div onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
-        {<WapperComponent zoomAnimation={applicationStyle}></WapperComponent>}
+      <div
+        onMouseEnter={MouseEnter}
+        onMouseLeave={MouseLeave}
+        onClick={executeApplication}
+      >
+        {
+          <WapperComponent
+            zoomAnimation={applicationStyle}
+            applicationCode={props.applicationCode}
+          ></WapperComponent>
+        }
       </div>
     );
   };

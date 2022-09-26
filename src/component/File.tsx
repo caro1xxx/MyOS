@@ -3,6 +3,7 @@ import withApplication from "./withApplication";
 import "../style/animation.css";
 type Props = {
   zoomAnimation: string;
+  applicationCode: number;
 };
 
 const File = (props: Props) => {

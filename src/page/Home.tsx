@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import styled from "styled-components";
 import BackgroundItem from "../component/BackgroundItem";
 import NavBar from "../component/NavBar";
+import ApplicationDisplatArea from "../component/ApplicationDisplayArea";
 type Props = {};
 
 const Wrap = styled.div`
@@ -51,6 +52,7 @@ const Home = (props: Props) => {
         })}
       </Wrap>
       <NavBar></NavBar>
+      <ApplicationDisplatArea></ApplicationDisplatArea>
     </Fragment>
   );
 };

@@ -2,6 +2,7 @@ import React from "react";
 import withApplication from "./withApplication";
 type Props = {
   zoomAnimation: string;
+  applicationCode: number;
 };
 
 const Setting = (props: Props) => {

@@ -1,0 +1,40 @@
+.zoomIn
+{
+    animation: zoomInanimation 0.5s;
+    -webkit-animation: zoomInanimation 0.5s; /* Safari 与 Chrome */
+    width: 60px;
+    height: 60px;
+}
+@keyframes zoomInanimation {
+  from {
+    width: 40px;
+    height: 40px;
+  }
+  to {
+    width: 60px;
+    height: 60px;
+  }
+}
+.restore{
+  animation: restoreAnimation 0.5s;
+    -webkit-animation: restoreAnimation 0.5s; /* Safari 与 Chrome */
+}
+
+@keyframes restoreAnimation {
+  from {
+    width: 60px;
+    height: 60px;
+  }
+  to {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.normal{
+  animation: normalAnimation 1s;
+    -webkit-animation: normalAnimation 1s; /* Safari 与 Chrome */
+}
+
+@keyframes normalAnimation {
+}

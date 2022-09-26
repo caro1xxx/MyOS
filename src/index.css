@@ -14,5 +14,6 @@ code {
 
 body{
   margin: 0;
-  background-color: black;
+  font-weight: 500;
+  /* background-color: black; */
 }

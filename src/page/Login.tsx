@@ -13,7 +13,6 @@ import {
 type Props = {};
 
 const Wrap = styled.div`
-  @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap");
   position: absolute;
   background-color: black;
   width: 100%;
@@ -21,8 +20,6 @@ const Wrap = styled.div`
   bottom: 0px;
   font-size: 18px;
   color: #12c063;
-  font-weight: 500;
-  font-family: "Raleway", sans-serif;
 `;
 
 const Input = styled.input`
@@ -33,7 +30,6 @@ const Input = styled.input`
   border: none;
   color: #12c063;
   font-weight: 500;
-  font-family: "Raleway", sans-serif;
   width: 50%;
   overflow: hidden;
 `;
@@ -43,7 +39,6 @@ const Prefix = styled.div`
   background-color: black;
   font-weight: 500;
   line-height: 20px;
-  font-family: "Raleway", sans-serif;
   font-size: 18px;
   width: 100%;
   height: 100%;

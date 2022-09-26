@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import withAppHandle from "./withAppHandle";
 type Props = {
@@ -12,6 +12,7 @@ const Wrap = styled.div`
   height: 100%;
   border-radius: 10px;
   padding: 10px;
+  user-select: none;
 `;
 
 const Body = styled.div``;
@@ -19,8 +20,7 @@ const Body = styled.div``;
 const AppFile = (props: Props) => {
   return (
     <Wrap style={{ borderRadius: props.borderRadius }}>
-      {/* <Body>{stack}</Body> */}
-      <div>file</div>
+      <Body>file</Body>
     </Wrap>
   );
 };

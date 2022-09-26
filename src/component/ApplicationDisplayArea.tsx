@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import AppFile from "../application/AppFile";
 import AppShell from "../application/AppShell";
 import { useAppSelector } from "../hooks";
+import { nanoid } from "nanoid";
 type Props = {};
 const Wrap = styled.div`
   /* background-color: #cacacacf; */
@@ -20,9 +21,9 @@ const ApplicationDisplayArea = (props: Props) => {
     <Wrap>
       {stack.map((item, index) => {
         return item === 0 ? (
-          <AppFile></AppFile>
+          <AppFile key={nanoid()}></AppFile>
         ) : item === 1 ? (
-          <AppShell></AppShell>
+          <AppShell key={nanoid()}></AppShell>
         ) : null;
       })}
     </Wrap>

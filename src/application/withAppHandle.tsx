@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
+import {
+  MouseDownTopHandler,
+  MouseUpTopHandler,
+  MouseMoveTopHandler,
+} from "../utils/AppDragHandler";
 type Props = {
   borderRadius: string;
 };
@@ -7,8 +12,6 @@ type Props = {
 const Wrap = styled.div`
   height: 400px;
   width: 600px;
-  margin-top: 100px;
-  margin-left: 100px;
 `;
 
 const Top = styled.div`
@@ -19,7 +22,7 @@ const Top = styled.div`
   padding: 0px 10px;
   height: 25px;
   border-radius: 10px 10px 0px 0px;
-  opacity: 0;
+  opacity: 1;
 `;
 
 const RedTopBlock = styled.div`
@@ -55,32 +58,87 @@ const YellowTopBlock = styled.div`
 
 const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
   const ReturnHandleApp = () => {
-    /**
-     * 不能将File进行memo,因为File的props会随
-     * 着鼠标移入移除改变,如果缓存了就失效了
-     */
     const MemoWapperComponent = React.memo(WapperComponent);
 
+    // app顶部选项属性
     const [attribute, setAttribute] = useState({
+      marginTop: 100,
+      marginLeft: 100,
       initHeight: 300,
       opacity: "none",
       borderRadius: "10px",
     });
 
-    const MouseEnterTop = () => {
+    // mouse enter options
+    // const MouseEnterTop = async (
+    //   e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    // ) => {
+    //   const attr = { ...attribute };
+    //   setAttribute({
+    //     marginTop: attr.marginTop,
+    //     marginLeft: attr.marginLeft,
+    //     initHeight: attr.initHeight,
+    //     opacity: "1",
+    //     borderRadius: "0px 0px 10px 10px",
+    //   });
+    //   await MouseEnterTopHandler([e.clientX, e.clientY]);
+    //   return false;
+    // };
+
+    // mouse down options
+    const MouseDownTop = async (
+      e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+      const attr = { ...attribute };
       setAttribute({
-        initHeight: 300,
+        marginTop: attr.marginTop,
+        marginLeft: attr.marginLeft,
+        initHeight: attr.initHeight,
         opacity: "1",
         borderRadius: "0px 0px 10px 10px",
       });
+      await MouseDownTopHandler(attr, [e.pageX, e.pageY]);
+      return false;
     };
 
-    const MouseLeaveTop = () => {
+    // mouse move options
+    const MouseMoveTop = async (
+      e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+      const attr = { ...attribute };
       setAttribute({
-        initHeight: 300,
+        marginTop: attr.marginTop,
+        marginLeft: attr.marginLeft,
+        initHeight: attr.initHeight,
+        opacity: "1",
+        borderRadius: "0px 0px 10px 10px",
+      });
+      await MouseMoveTopHandler(attr, setAttribute, [e.pageX, e.pageY]);
+      return false;
+    };
+
+    // mouse up options
+    const MouseUpTop = async (
+      e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+      await MouseUpTopHandler();
+      return false;
+    };
+
+    // mouse leave options
+    const MouseLeaveTop = async (
+      e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+      await MouseUpTopHandler();
+      const attr = { ...attribute };
+      setAttribute({
+        marginTop: attr.marginTop,
+        marginLeft: attr.marginLeft,
+        initHeight: attr.initHeight,
         opacity: "0",
         borderRadius: "10px",
       });
+      return false;
     };
 
     return (
@@ -88,11 +146,15 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
         style={{
           height: attribute.initHeight,
           position: "absolute",
+          marginTop: attribute.marginTop + "px",
+          marginLeft: attribute.marginLeft + "px",
         }}
       >
         <Top
-          onMouseEnter={MouseEnterTop}
-          onMouseLeave={MouseLeaveTop}
+          onMouseLeave={(e) => MouseLeaveTop(e)}
+          onMouseDown={(e) => MouseDownTop(e)}
+          onMouseUp={(e) => MouseUpTop(e)}
+          onMouseMove={(e) => MouseMoveTop(e)}
           style={{ opacity: attribute.opacity }}
         >
           <RedTopBlock></RedTopBlock>

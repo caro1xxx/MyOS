@@ -15,6 +15,7 @@ export const ExecuteStackHandle = createSlice({
   reducers: {
     increment: (state, actions) => {
       state.value = [...state.value, actions.payload];
+      console.log(state.value);
     },
   },
 });

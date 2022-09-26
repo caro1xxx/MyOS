@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import withAppHandle from "./withAppHandle";
 type Props = {
@@ -13,8 +13,6 @@ const Wrap = styled.div`
   border-radius: 10px;
   padding: 10px;
 `;
-
-const Body = styled.div``;
 
 const AppShell = (props: Props) => {
   return (

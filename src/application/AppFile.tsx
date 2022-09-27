@@ -7,7 +7,6 @@ type Props = {
 };
 
 const Wrap = styled.div`
-  background-color: white;
   color: black;
   width: 100%;
   height: 100%;
@@ -23,6 +22,8 @@ const AppFile = (props: Props) => {
     <Wrap
       style={{
         borderRadius: props.borderRadius,
+        // 控制是否高亮
+        backgroundColor: props.zIndex === 10 ? "#d0d0d0bb" : "#fff",
       }}
     >
       <Body>{props.zIndex}</Body>

@@ -52,9 +52,10 @@ export const ExecuteStackHandle = createSlice({
     promoteAppToTop: (state, action) => {
       state.value.forEach((item, index) => {
         if (action.payload.id === item.id) {
-          item.zIndex = 11;
+          state.value[index].zIndex = 11;
+        } else {
+          state.value[index].zIndex = 10;
         }
-        item.zIndex = 10;
       });
     },
   },

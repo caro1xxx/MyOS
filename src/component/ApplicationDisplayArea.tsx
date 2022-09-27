@@ -5,7 +5,6 @@ import AppShell from "../application/AppShell";
 import { useAppSelector } from "../hooks";
 type Props = {};
 const Wrap = styled.div`
-  /* background-color: #cacacacf; */
   position: absolute;
   top: 0;
   bottom: 0;
@@ -25,12 +24,13 @@ const ApplicationDisplayArea = (props: Props) => {
          * 0 :文件夹
          * 1 :设置
          * 0 :shell
-         * ....
+         * ...
          */
         return item.code === 0 ? (
-          <AppFile key={item.id}></AppFile>
+          // borderRadius:控制鼠标是否移入App top options
+          <AppFile key={item.id} {...item} borderRadius={"10px"}></AppFile>
         ) : item.code === 1 ? (
-          <AppShell key={item.id}></AppShell>
+          <AppShell key={item.id} {...item} borderRadius={"10px"}></AppShell>
         ) : null;
       })}
     </Wrap>

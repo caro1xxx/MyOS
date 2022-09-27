@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { changeMarginTopAndLeft, promoteAppToTop } from "../store/execute";
-import { useAppSelector, useAppDispatch } from "../hooks";
+import { useAppDispatch } from "../hooks";
 import {
   MouseDownTopHandler,
   MouseUpTopHandler,
@@ -57,29 +57,32 @@ const YellowTopBlock = styled.div`
 
 type Props = {
   borderRadius: string;
+  code: number;
+  id: string;
+  height: number;
+  width: number;
+  marginLeft: number;
+  marginTop: number;
   zIndex: number;
 };
 
 // 不同App窗口的HOC
 const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
-  const ReturnHandleApp = () => {
+  const ReturnHandleApp = (props: Props) => {
     const MemoWapperComponent = React.memo(WapperComponent);
-    // 获取 App stack中的所有App
-    const ExecuteStack = useAppSelector((state) => state.actuators.value);
-    // App stack大小
-    const ExecuteStackLength = ExecuteStack.length;
     const dispatch = useAppDispatch();
-    // app顶部选项属性
+
     /**
+     * app顶部选项属性
+     *
      * 这里初始化App属性的时候需要获取store中的当前的App的样式进行初始化
-     * ExecuteStackLength - 1就是stack中最近打开的App
      */
     const [attribute, setAttribute] = useState({
-      marginTop: ExecuteStack[ExecuteStackLength - 1].marginTop,
-      marginLeft: ExecuteStack[ExecuteStackLength - 1].marginLeft,
-      initHeight: ExecuteStack[ExecuteStackLength - 1].height,
+      marginTop: props.marginTop,
+      marginLeft: props.marginLeft,
+      initHeight: props.height,
       // zIndex用于控制App的显示层级
-      zIndex: ExecuteStack[ExecuteStackLength - 1].zIndex,
+      zIndex: props.zIndex,
       // opacity:用于控制App top options的显示
       opacity: "none",
       borderRadius: "10px",
@@ -118,7 +121,7 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
         attribute,
         setAttribute,
         [e.pageX, e.pageY],
-        ExecuteStack[ExecuteStackLength - 1].id
+        props.id
       );
       // 提交
       dispatch(
@@ -157,22 +160,17 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
 
     // 点击App body,将当前App的zindex提升1
     const clickApp = () => {
-      const id = ExecuteStack[ExecuteStackLength - 1].id;
-      setAttribute({
-        marginTop: attribute.marginTop,
-        marginLeft: attribute.marginLeft,
-        initHeight: attribute.initHeight,
-        zIndex: ExecuteStack[ExecuteStackLength - 1].zIndex + 1,
-        opacity: "0",
-        borderRadius: "10px",
-      });
-      dispatch(promoteAppToTop(id));
+      if (props.zIndex === 11) return false;
+      // 提交该App
+      dispatch(promoteAppToTop({ id: props.id }));
       return false;
     };
 
     return (
       <Wrap
-        onClick={clickApp}
+        onClick={(e) => {
+          clickApp();
+        }}
         style={{
           position: "absolute",
           height: attribute.initHeight,
@@ -182,7 +180,9 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
         }}
       >
         <Top
-          onMouseLeave={(e) => MouseLeaveTop(e)}
+          onMouseLeave={(e) => {
+            MouseLeaveTop(e);
+          }}
           onMouseDown={(e) => MouseDownTop(e)}
           onMouseUp={(e) => MouseUpTop(e)}
           onMouseMove={(e) => MouseMoveTop(e)}
@@ -193,10 +193,16 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           <YellowTopBlock></YellowTopBlock>
           <GreenTopBlock></GreenTopBlock>
         </Top>
+
         <MemoWapperComponent
-          // 这里的圆角是为了控制当App top options显示时,App body就应该取消左上和右上的圆角
           borderRadius={attribute.borderRadius}
-          zIndex={attribute.zIndex}
+          zIndex={props.zIndex}
+          id={props.id}
+          height={attribute.initHeight}
+          code={props.code}
+          marginLeft={attribute.marginLeft}
+          marginTop={attribute.marginTop}
+          width={props.width}
         ></MemoWapperComponent>
       </Wrap>
     );

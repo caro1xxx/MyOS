@@ -12,6 +12,7 @@ const Wrap = styled.div`
   height: 100%;
   border-radius: 10px;
   padding: 10px;
+  user-select: none;
 `;
 
 const AppShell = (props: Props) => {
@@ -19,9 +20,9 @@ const AppShell = (props: Props) => {
     <Wrap
       style={{
         borderRadius: props.borderRadius,
+        backgroundColor: props.zIndex === 10 ? "#d0d0d0bb" : "#fff",
       }}
     >
-      {/* <Body>{stack}</Body> */}
       <div>shell</div>
     </Wrap>
   );

@@ -1,7 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 import { nanoid } from "nanoid";
-import { getScreenAreaAvailable } from "../utils/AppRelated";
 interface Item {
   code: number;
   id: string;

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ExecuteStackState from "./execute";
+import fileSystem from "./fileSystem";
 
 export const store = configureStore({
   reducer: {
     actuators: ExecuteStackState,
+    fileState: fileSystem,
   },
 });
 

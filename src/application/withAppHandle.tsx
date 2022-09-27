@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
 import {
   changeMarginTopAndLeft,
   promoteAppToTop,
   destoryApp,
+  MarkAppMaximize,
 } from "../store/execute";
 import { useAppDispatch } from "../hooks";
 import {
@@ -11,6 +12,7 @@ import {
   MouseUpTopHandler,
   MouseMoveTopHandler,
 } from "../utils/AppDragHandler";
+import { getScreenAreaAvailable, executeMaximize } from "../utils/AppRelated";
 
 const Wrap = styled.div`
   height: 400px;
@@ -68,6 +70,7 @@ type Props = {
   marginLeft: number;
   marginTop: number;
   zIndex: number;
+  MaximizeFlag: boolean;
 };
 
 // 不同App窗口的HOC
@@ -76,6 +79,24 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
     const MemoWapperComponent = React.memo(WapperComponent);
     const dispatch = useAppDispatch();
 
+    // 监听MaximizeFlag是否被标记,如果MaximizeFlag产生变化说明窗口被缩小了
+    // 那么就重新获取stack中App原来的坐标
+    useEffect(() => {
+      if (!props.MaximizeFlag) {
+        setAttribute({
+          marginTop: props.marginTop,
+          marginLeft: props.marginLeft,
+          initHeight: props.height,
+          initWidth: props.width,
+          // zIndex用于控制App的显示层级
+          zIndex: props.zIndex,
+          MaximizeFlag: props.MaximizeFlag,
+          // opacity:用于控制App top options的显示
+          opacity: "none",
+          borderRadius: "10px",
+        });
+      }
+    }, [props.MaximizeFlag]);
     /**
      * app顶部选项属性
      *
@@ -85,8 +106,10 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
       marginTop: props.marginTop,
       marginLeft: props.marginLeft,
       initHeight: props.height,
+      initWidth: props.width,
       // zIndex用于控制App的显示层级
       zIndex: props.zIndex,
+      MaximizeFlag: props.MaximizeFlag,
       // opacity:用于控制App top options的显示
       opacity: "none",
       borderRadius: "10px",
@@ -100,6 +123,8 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
         marginTop: attribute.marginTop,
         marginLeft: attribute.marginLeft,
         initHeight: attribute.initHeight,
+        initWidth: attribute.initWidth,
+        MaximizeFlag: attribute.MaximizeFlag,
         zIndex: attribute.zIndex,
         opacity: "1",
         borderRadius: "0px 0px 10px 10px",
@@ -116,6 +141,8 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
         marginTop: attribute.marginTop,
         marginLeft: attribute.marginLeft,
         initHeight: attribute.initHeight,
+        initWidth: attribute.initWidth,
+        MaximizeFlag: attribute.MaximizeFlag,
         zIndex: attribute.zIndex,
         opacity: "1",
         borderRadius: "0px 0px 10px 10px",
@@ -155,6 +182,8 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
         marginTop: attribute.marginTop,
         marginLeft: attribute.marginLeft,
         initHeight: attribute.initHeight,
+        initWidth: attribute.initWidth,
+        MaximizeFlag: attribute.MaximizeFlag,
         zIndex: attribute.zIndex,
         opacity: "0",
         borderRadius: "10px",
@@ -170,6 +199,15 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
       return false;
     };
 
+    // 最大化
+    const maximize = async () => {
+      let result = await getScreenAreaAvailable();
+      // 执行最大化
+      await executeMaximize(result, attribute, setAttribute);
+      // 提交该App最大化
+      dispatch(MarkAppMaximize({ id: props.id }));
+    };
+
     return (
       <Wrap
         onClick={(e) => {
@@ -178,6 +216,7 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
         style={{
           position: "absolute",
           height: attribute.initHeight,
+          width: attribute.initWidth,
           marginTop: attribute.marginTop + "px",
           marginLeft: attribute.marginLeft + "px",
           zIndex: props.zIndex,
@@ -199,10 +238,10 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
             }}
           ></RedTopBlock>
           <YellowTopBlock></YellowTopBlock>
-          <GreenTopBlock></GreenTopBlock>
+          <GreenTopBlock onClick={maximize}></GreenTopBlock>
         </Top>
-
         <MemoWapperComponent
+          MaximizeFlag={attribute.MaximizeFlag}
           borderRadius={attribute.borderRadius}
           zIndex={props.zIndex}
           id={props.id}
@@ -212,6 +251,7 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           marginTop={attribute.marginTop}
           width={props.width}
         ></MemoWapperComponent>
+        <div>{attribute.MaximizeFlag + ""}</div>
       </Wrap>
     );
   };

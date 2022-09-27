@@ -10,6 +10,7 @@ interface Item {
   marginLeft: number;
   marginTop: number;
   zIndex: number;
+  MaximizeFlag: boolean;
 }
 
 interface init {
@@ -25,6 +26,10 @@ export const ExecuteStackHandle = createSlice({
   initialState,
   reducers: {
     createApp: (state, actions) => {
+      // 先将stack中的所有App图层降级
+      state.value.forEach((item, index) => {
+        state.value[index].zIndex = 10;
+      });
       state.value.push({
         /**
          * 每一个创建的App的入栈信息
@@ -33,9 +38,10 @@ export const ExecuteStackHandle = createSlice({
         id: nanoid(), //app id
         height: 400, // 初始化高度
         width: 600, //初始化宽度
-        marginLeft: 100, //初始化左边距
-        marginTop: 100, //初始化上边距
-        zIndex: 10,
+        marginLeft: 0, //初始化左边距
+        marginTop: 30, //初始化上边距
+        zIndex: 11,
+        MaximizeFlag: false,
       });
     },
     // 提交App的marginTop和marginLeft变化
@@ -68,6 +74,24 @@ export const ExecuteStackHandle = createSlice({
         }
       }
     },
+    // 标记该App全屏
+    MarkAppMaximize: (state, action) => {
+      for (let i = 0; i < state.value.length; i++) {
+        if (state.value[i].id === action.payload.id) {
+          state.value[i].MaximizeFlag = true;
+          break;
+        }
+      }
+    },
+    // 退出全屏
+    exitMaximize: (state) => {
+      for (let i = 0; i < state.value.length; i++) {
+        if (state.value[i].MaximizeFlag) {
+          state.value[i].MaximizeFlag = false;
+          break;
+        }
+      }
+    },
   },
 });
 
@@ -76,6 +100,8 @@ export const {
   changeMarginTopAndLeft,
   promoteAppToTop,
   destoryApp,
+  exitMaximize,
+  MarkAppMaximize,
 } = ExecuteStackHandle.actions;
 export const selectCount = (state: RootState) => state.actuators.value;
 export default ExecuteStackHandle.reducer;

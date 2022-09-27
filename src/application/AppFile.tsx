@@ -26,7 +26,7 @@ const AppFile = (props: Props) => {
         backgroundColor: props.zIndex === 10 ? "#d0d0d0bb" : "#fff",
       }}
     >
-      <Body>{props.zIndex}</Body>
+      <Body>file</Body>
     </Wrap>
   );
 };

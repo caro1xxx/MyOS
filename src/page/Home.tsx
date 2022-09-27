@@ -6,6 +6,8 @@ import styled from "styled-components";
 import BackgroundItem from "../component/BackgroundItem";
 import NavBar from "../component/NavBar";
 import ApplicationDisplatArea from "../component/ApplicationDisplayArea";
+import { useAppDispatch } from "../hooks";
+import { exitMaximize } from "../store/execute";
 type Props = {};
 
 const Wrap = styled.div`
@@ -23,7 +25,7 @@ const Home = (props: Props) => {
   const MemoApplicationDisplayArea = React.memo(ApplicationDisplatArea);
   const MemoNavBar = React.memo(NavBar);
   const MemoBackgroundItem = React.memo(BackgroundItem);
-
+  const dispatch = useAppDispatch();
   const [renderNumber, setRenderNumber] = useState({
     sumNumber: [0],
   });
@@ -40,6 +42,22 @@ const Home = (props: Props) => {
         ).fill(0),
       ],
     });
+    /**
+     * 这个Effect是为了监听App的最小化事件[shfit + Q],如果监听到那么就提交退出最大化
+     */
+    document.onkeydown = function (e) {
+      if (e.code === "ShiftLeft") {
+        document.onkeydown = function (e) {
+          if (e.code === "KeyQ") {
+            dispatch(exitMaximize());
+          }
+        };
+      }
+    };
+    // 销毁
+    return () => {
+      document.onkeydown = null;
+    };
   }, []);
 
   // let navigate = useNavigate();

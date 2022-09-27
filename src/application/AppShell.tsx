@@ -24,7 +24,7 @@ const AppShell = (props: Props) => {
         zIndex: props.zIndex,
       }}
     >
-      <div>{props.zIndex}</div>
+      <div>shell</div>
     </Wrap>
   );
 };

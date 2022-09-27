@@ -8,6 +8,8 @@ type setAttrType = React.Dispatch<
     marginTop: number;
     marginLeft: number;
     initHeight: number;
+    initWidth: number;
+    MaximizeFlag: boolean;
     zIndex: number;
     opacity: string;
     borderRadius: string;
@@ -18,6 +20,8 @@ type Attr = {
   marginTop: number;
   marginLeft: number;
   initHeight: number;
+  initWidth: number;
+  MaximizeFlag: boolean;
   zIndex: number;
   opacity: string;
   borderRadius: string;
@@ -61,6 +65,8 @@ export const MouseMoveTopHandler = (
     marginTop: CurrentMousePos[1] - PrevMousePos[1],
     marginLeft: CurrentMousePos[0] - PrevMousePos[0],
     initHeight: attr.initHeight,
+    initWidth: attr.initWidth,
+    MaximizeFlag: attr.MaximizeFlag,
     zIndex: attr.zIndex,
     opacity: "1",
     borderRadius: "0px 0px 10px 10px",

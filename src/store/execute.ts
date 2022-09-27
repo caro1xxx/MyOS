@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 import { nanoid } from "nanoid";
-
+import { getScreenAreaAvailable } from "../utils/AppRelated";
 interface Item {
   code: number;
   id: string;
@@ -36,10 +36,10 @@ export const ExecuteStackHandle = createSlice({
          */
         code: actions.payload, //app code
         id: nanoid(), //app id
-        height: 400, // 初始化高度
-        width: 600, //初始化宽度
-        marginLeft: 0, //初始化左边距
-        marginTop: 30, //初始化上边距
+        height: document.documentElement.clientHeight / 2, // 初始化高度
+        width: document.documentElement.clientWidth / 2, //初始化宽度
+        marginLeft: document.documentElement.clientWidth / 5, //初始化左边距
+        marginTop: document.documentElement.clientHeight / 5, //初始化上边距
         zIndex: 11,
         MaximizeFlag: false,
       });

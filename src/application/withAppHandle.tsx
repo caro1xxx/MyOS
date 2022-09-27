@@ -251,7 +251,6 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           marginTop={attribute.marginTop}
           width={props.width}
         ></MemoWapperComponent>
-        <div>{attribute.MaximizeFlag + ""}</div>
       </Wrap>
     );
   };

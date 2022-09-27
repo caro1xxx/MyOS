@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { changeMarginTopAndLeft, promoteAppToTop } from "../store/execute";
+import {
+  changeMarginTopAndLeft,
+  promoteAppToTop,
+  destoryApp,
+} from "../store/execute";
 import { useAppDispatch } from "../hooks";
 import {
   MouseDownTopHandler,
@@ -176,7 +180,7 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           height: attribute.initHeight,
           marginTop: attribute.marginTop + "px",
           marginLeft: attribute.marginLeft + "px",
-          zIndex: attribute.zIndex,
+          zIndex: props.zIndex,
         }}
       >
         <Top
@@ -189,7 +193,11 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           style={{ opacity: attribute.opacity }}
         >
           {/* 红黄蓝options */}
-          <RedTopBlock></RedTopBlock>
+          <RedTopBlock
+            onClick={() => {
+              dispatch(destoryApp({ id: props.id }));
+            }}
+          ></RedTopBlock>
           <YellowTopBlock></YellowTopBlock>
           <GreenTopBlock></GreenTopBlock>
         </Top>

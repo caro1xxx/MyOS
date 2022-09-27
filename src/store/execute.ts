@@ -49,6 +49,7 @@ export const ExecuteStackHandle = createSlice({
       });
     },
     // 提升App 的 z-index,相当于将该id的App置于最顶层
+    // 并且要遍历所有App,将除该App之外的App zindex置为10
     promoteAppToTop: (state, action) => {
       state.value.forEach((item, index) => {
         if (action.payload.id === item.id) {
@@ -58,10 +59,23 @@ export const ExecuteStackHandle = createSlice({
         }
       });
     },
+    // 销毁App
+    destoryApp: (state, action) => {
+      for (let i = 0; i < state.value.length; i++) {
+        if (state.value[i].id === action.payload.id) {
+          state.value.splice(i, 1);
+          break;
+        }
+      }
+    },
   },
 });
 
-export const { createApp, changeMarginTopAndLeft, promoteAppToTop } =
-  ExecuteStackHandle.actions;
+export const {
+  createApp,
+  changeMarginTopAndLeft,
+  promoteAppToTop,
+  destoryApp,
+} = ExecuteStackHandle.actions;
 export const selectCount = (state: RootState) => state.actuators.value;
 export default ExecuteStackHandle.reducer;

@@ -21,9 +21,10 @@ const AppShell = (props: Props) => {
       style={{
         borderRadius: props.borderRadius,
         backgroundColor: props.zIndex === 10 ? "#d0d0d0bb" : "#fff",
+        zIndex: props.zIndex,
       }}
     >
-      <div>shell</div>
+      <div>{props.zIndex}</div>
     </Wrap>
   );
 };

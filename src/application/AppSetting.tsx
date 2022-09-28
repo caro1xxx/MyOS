@@ -15,7 +15,7 @@ const Wrap = styled.div`
   user-select: none;
 `;
 
-const AppShell = (props: Props) => {
+const AppSetting = (props: Props) => {
   return (
     <Wrap
       style={{
@@ -29,4 +29,4 @@ const AppShell = (props: Props) => {
   );
 };
 
-export default withAppHandle(AppShell);
+export default withAppHandle(AppSetting);

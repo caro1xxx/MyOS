@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import AppFile from "../application/AppFile";
+import AppSetting from "../application/AppSetting";
 import AppShell from "../application/AppShell";
 import { useAppSelector } from "../hooks";
 type Props = {};
@@ -30,6 +31,12 @@ const ApplicationDisplayArea = (props: Props) => {
           // borderRadius:控制鼠标是否移入App top options
           <AppFile key={item.id} {...item} borderRadius={"10px"}></AppFile>
         ) : item.code === 1 ? (
+          <AppSetting
+            key={item.id}
+            {...item}
+            borderRadius={"10px"}
+          ></AppSetting>
+        ) : item.code === 2 ? (
           <AppShell key={item.id} {...item} borderRadius={"10px"}></AppShell>
         ) : null;
       })}

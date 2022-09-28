@@ -192,7 +192,6 @@ const Login = (props: Props) => {
           </span>
         )}
       </Prefix>
-      <div>{currentInput}</div>
     </Wrap>
   );
 };

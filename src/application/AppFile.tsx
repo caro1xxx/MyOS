@@ -34,7 +34,8 @@ const Main = styled.div`
 
 const TableofContents = styled.div`
   border-left: 1px solid #e5e5e5;
-  padding: 0px 10px;
+  padding: 0px 5px;
+  width: 100%;
   height: 100%;
 `;
 

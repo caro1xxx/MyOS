@@ -15,6 +15,7 @@ interface init {
     currentShowFile: Array<File>;
     deleteFileId?: string;
     currentPath: string[];
+    recycleFile?: Array<File>;
   };
 }
 
@@ -66,6 +67,7 @@ const initialState: init = {
     ],
     currentShowFile: [],
     currentPath: ["root"],
+    recycleFile: [],
   },
 };
 
@@ -73,49 +75,63 @@ export const fileSystem = createSlice({
   name: "fileStack",
   initialState,
   reducers: {
+    // 创建文件
     createFile: (state, actions) => {},
+    // 提交需要删除文件的id
     commiteDeleteFileId: (state, actions) => {
       if (!actions.payload.id) return;
       state.value.deleteFileId = actions.payload.id;
     },
+    // 删除文件
     deleteFile: (state) => {
+      let res: File | null = null;
       for (let i = 0; i < state.value.fileList.length; i++) {
         if (state.value.fileList[i].fileId === state.value.deleteFileId) {
+          res = state.value.fileList[i];
           state.value.fileList.splice(i, 1);
+          break;
+        }
+      }
+      for (let i = 0; i < state.value.currentShowFile.length; i++) {
+        if (
+          state.value.currentShowFile[i].fileId === state.value.deleteFileId
+        ) {
+          res = state.value.currentShowFile[i];
           state.value.currentShowFile.splice(i, 1);
           break;
         }
       }
+      if (res === null) return;
+      state.value.recycleFile?.push(res);
     },
+    // 返回上一级
     goback: (state) => {
       let obj = { ...state.value },
         flag = [];
       if (obj.currentPath.length === 1) return;
       obj.currentPath.pop();
+      // 情况当前显示文件列表
       obj.currentShowFile = [];
+      // 依次获取文件库内的所有文件
       for (let i = 0; i < obj.fileList.length; i++) {
-        // 每次循环都清空flag
         flag = [];
-        // 循环currentPath
         for (let j = 0; j < obj.currentPath.length; j++) {
-          // 判断location[j] === currentPath[j]
           if (obj.fileList[i].location[j] === obj.currentPath[j]) {
+            if (obj.currentPath.length < obj.fileList[i].location.length) {
+              flag.push(false);
+            }
             flag.push(true);
           } else {
             flag.push(false);
           }
         }
-        // 最终到这里flag会以数组的形式呈现,如:[true,false] 又或者[true,true,true]
-        // every对flag内所有元素进行判断
-        let res = flag.every((item) => {
-          return item === true;
-        });
-        if (res) {
+        if (!flag.includes(false)) {
           obj.currentShowFile.push(obj.fileList[i]);
         }
       }
       state.value = obj;
     },
+    // 进入文件夹
     go: (state, actions) => {
       let obj = { ...state.value },
         flag = [];
@@ -125,28 +141,24 @@ export const fileSystem = createSlice({
       obj.currentShowFile = [];
       // 依次获取文件库内的所有文件
       for (let i = 0; i < obj.fileList.length; i++) {
-        // 每次循环都清空flag
         flag = [];
-        // 循环currentPath
         for (let j = 0; j < obj.currentPath.length; j++) {
-          // 判断location[j] === currentPath[j]
           if (obj.fileList[i].location[j] === obj.currentPath[j]) {
+            if (obj.currentPath.length < obj.fileList[i].location.length) {
+              flag.push(false);
+            }
             flag.push(true);
           } else {
             flag.push(false);
           }
         }
-        // 最终到这里flag会以数组的形式呈现,如:[true,false] 又或者[true,true,true]
-        // every对flag内所有元素进行判断
-        let res = flag.every((item) => {
-          return item === true;
-        });
-        if (res) {
+        if (!flag.includes(false)) {
           obj.currentShowFile.push(obj.fileList[i]);
         }
       }
       state.value = obj;
     },
+    // 初始化root文件夹列表
     initCurrentShowFile: (state) => {
       let obj = { ...state.value },
         flag = [];
@@ -154,23 +166,18 @@ export const fileSystem = createSlice({
       obj.currentShowFile = [];
       // 依次获取文件库内的所有文件
       for (let i = 0; i < obj.fileList.length; i++) {
-        // 每次循环都清空flag
         flag = [];
-        // 循环currentPath
         for (let j = 0; j < obj.currentPath.length; j++) {
-          // 判断location[j] === currentPath[j]
           if (obj.fileList[i].location[j] === obj.currentPath[j]) {
+            if (obj.currentPath.length < obj.fileList[i].location.length) {
+              flag.push(false);
+            }
             flag.push(true);
           } else {
             flag.push(false);
           }
         }
-        // 最终到这里flag会以数组的形式呈现,如:[true,false] 又或者[true,true,true]
-        // every对flag内所有元素进行判断
-        let res = flag.every((item) => {
-          return item === true;
-        });
-        if (res) {
+        if (!flag.includes(false)) {
           obj.currentShowFile.push(obj.fileList[i]);
         }
       }

@@ -1,31 +1,18 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useAppDispatch } from "../hooks";
 import { deleteFile } from "../store/fileSystem";
 type Props = {};
 const Wrap = styled.div`
   height: 50%;
-  background-color: #efefef;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 const FileFavorites = (props: Props) => {
-  const [attribute, setAttribute] = useState("#fff");
   const dispatch = useAppDispatch();
   return (
     <Wrap
-      style={{ backgroundColor: attribute }}
-      onMouseEnter={(e) => {
-        e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-        setAttribute("#ffff");
-      }}
-      onDragLeave={(e) => {
-        e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-        setAttribute("#efefef");
-      }}
       onDrop={(e) => {
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();

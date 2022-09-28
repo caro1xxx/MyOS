@@ -10,9 +10,11 @@ type attr = {
   marginLeft: number;
   initHeight: number;
   initWidth: number;
-  MaximizeFlag: boolean;
   zIndex: number;
+  MaximizeFlag: boolean;
   opacity: string;
+  bodyOpacity: string;
+  isDraggable: boolean;
   borderRadius: string;
 };
 
@@ -22,13 +24,16 @@ type setAttr = React.Dispatch<
     marginLeft: number;
     initHeight: number;
     initWidth: number;
-    MaximizeFlag: boolean;
     zIndex: number;
+    MaximizeFlag: boolean;
     opacity: string;
+    bodyOpacity: string;
+    isDraggable: boolean;
     borderRadius: string;
   }>
 >;
 
+// 窗口最大化
 export const executeMaximize = (
   value: { height: number; width: number },
   attribute: attr,
@@ -44,6 +49,8 @@ export const executeMaximize = (
     MaximizeFlag: true,
     zIndex: attribute.zIndex,
     opacity: "1",
+    bodyOpacity: attribute.bodyOpacity,
+    isDraggable: attribute.isDraggable,
     borderRadius: "0px 0px 10px 10px",
   });
   return false;

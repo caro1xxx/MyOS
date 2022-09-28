@@ -48,7 +48,7 @@ const Path = styled.div`
 
 const SubFileArea = styled.div`
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-gap: 10px;
 `;
 
@@ -67,15 +67,11 @@ const AppFile = (props: Props) => {
           <Path>root/</Path>
           <SubFileArea>
             {subFile.map((item, index) => {
-              return <SubFile title={item.fileId} key={nanoid()}></SubFile>;
+              return <SubFile title={item.fileName} key={nanoid()}></SubFile>;
             })}
           </SubFileArea>
         </Main>
-        <TableofContents>
-          {/* {["Application", "Download", "Desktop", "Disk"].map((item) => {
-            return <Contents key={nanoid()}>{item}</Contents>;
-          })} */}
-        </TableofContents>
+        <TableofContents>1</TableofContents>
       </Body>
     </Wrap>
   );

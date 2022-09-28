@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { nanoid } from "nanoid";
 import type { RootState } from "./store";
 interface File {
   fileId: string;
@@ -12,7 +13,38 @@ interface init {
 }
 
 const initialState: init = {
-  value: [{ fileId: "1", fileName: "abc", fileType: 1, location: "1111" }],
+  value: [
+    {
+      fileId: nanoid(),
+      fileName: "Document/",
+      fileType: 0,
+      location: "root/",
+    },
+    {
+      fileId: nanoid(),
+      fileName: "Application/",
+      fileType: 0,
+      location: "root/",
+    },
+    {
+      fileId: nanoid(),
+      fileName: "Disk/",
+      fileType: 0,
+      location: "root/",
+    },
+    {
+      fileId: nanoid(),
+      fileName: "Desktop/",
+      fileType: 0,
+      location: "root/",
+    },
+    {
+      fileId: nanoid(),
+      fileName: "Download/",
+      fileType: 0,
+      location: "root/",
+    },
+  ],
 };
 
 export const fileSystem = createSlice({

@@ -6,12 +6,15 @@ import {
   destoryApp,
   MarkAppMaximize,
 } from "../store/execute";
-import { useAppDispatch } from "../hooks";
 import {
-  MouseDownTopHandler,
-  MouseUpTopHandler,
-  MouseMoveTopHandler,
+  mouseEnterTopOptions,
+  mouseLeaveTopOptions,
+  mouseDwonTopOptions,
+  mouseUpTopOptions,
+  mouseDrag,
+  mouseDragEnd,
 } from "../utils/AppDragHandler";
+import { useAppDispatch } from "../hooks";
 import { getScreenAreaAvailable, executeMaximize } from "../utils/AppRelated";
 
 const Wrap = styled.div`
@@ -88,10 +91,10 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           marginLeft: props.marginLeft,
           initHeight: props.height,
           initWidth: props.width,
-          // zIndex用于控制App的显示层级
           zIndex: props.zIndex,
           MaximizeFlag: props.MaximizeFlag,
-          // opacity:用于控制App top options的显示
+          bodyOpacity: "1",
+          isDraggable: false,
           opacity: "none",
           borderRadius: "10px",
         });
@@ -112,84 +115,10 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
       MaximizeFlag: props.MaximizeFlag,
       // opacity:用于控制App top options的显示
       opacity: "none",
+      bodyOpacity: "none",
+      isDraggable: false,
       borderRadius: "10px",
     });
-
-    // mouse down options
-    const MouseDownTop = async (
-      e: React.MouseEvent<HTMLDivElement, MouseEvent>
-    ) => {
-      setAttribute({
-        marginTop: attribute.marginTop,
-        marginLeft: attribute.marginLeft,
-        initHeight: attribute.initHeight,
-        initWidth: attribute.initWidth,
-        MaximizeFlag: attribute.MaximizeFlag,
-        zIndex: attribute.zIndex,
-        opacity: "1",
-        borderRadius: "0px 0px 10px 10px",
-      });
-      await MouseDownTopHandler(attribute, [e.pageX, e.pageY]);
-      return false;
-    };
-
-    // mouse move options
-    const MouseMoveTop = async (
-      e: React.MouseEvent<HTMLDivElement, MouseEvent>
-    ) => {
-      setAttribute({
-        marginTop: attribute.marginTop,
-        marginLeft: attribute.marginLeft,
-        initHeight: attribute.initHeight,
-        initWidth: attribute.initWidth,
-        MaximizeFlag: attribute.MaximizeFlag,
-        zIndex: attribute.zIndex,
-        opacity: "1",
-        borderRadius: "0px 0px 10px 10px",
-      });
-      // 这一步执行返回的结果就是鼠标move之后的marginLeft和marginTop,我们需要提交到store中
-      let res = await MouseMoveTopHandler(
-        attribute,
-        setAttribute,
-        [e.pageX, e.pageY],
-        props.id
-      );
-      // 提交
-      dispatch(
-        changeMarginTopAndLeft({
-          left: res[0],
-          top: res[1],
-          id: res[2], // App唯一标识
-        })
-      );
-      return false;
-    };
-
-    // mouse up options
-    const MouseUpTop = async (
-      e: React.MouseEvent<HTMLDivElement, MouseEvent>
-    ) => {
-      await MouseUpTopHandler();
-      return false;
-    };
-
-    // mouse leave options
-    const MouseLeaveTop = async (
-      e: React.MouseEvent<HTMLDivElement, MouseEvent>
-    ) => {
-      await MouseUpTopHandler();
-      setAttribute({
-        marginTop: attribute.marginTop,
-        marginLeft: attribute.marginLeft,
-        initHeight: attribute.initHeight,
-        initWidth: attribute.initWidth,
-        MaximizeFlag: attribute.MaximizeFlag,
-        zIndex: attribute.zIndex,
-        opacity: "0",
-        borderRadius: "10px",
-      });
-      return false;
-    };
 
     // 点击App body,将当前App的zindex提升1
     const clickApp = () => {
@@ -210,7 +139,30 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
 
     return (
       <Wrap
+        draggable={attribute.isDraggable}
+        onDrag={(e) => {
+          e.stopPropagation();
+          e.nativeEvent.stopImmediatePropagation();
+          let res = mouseDrag(setAttribute, attribute, e);
+          // changeMarginTopAndLeft({
+          //   id: props.id,
+          //   left: res.left,
+          //   top: res.top,
+          // });
+        }}
+        onDragEnd={(e) => {
+          e.stopPropagation();
+          e.nativeEvent.stopImmediatePropagation();
+          mouseDragEnd(setAttribute, attribute, e);
+        }}
+        onDragOver={(e) => {
+          e.stopPropagation();
+          e.nativeEvent.stopImmediatePropagation();
+          e.preventDefault();
+        }}
         onClick={(e) => {
+          e.stopPropagation();
+          e.nativeEvent.stopImmediatePropagation();
           clickApp();
         }}
         style={{
@@ -220,25 +172,48 @@ const withAppHandle = (WapperComponent: (props: Props) => JSX.Element) => {
           marginTop: attribute.marginTop + "px",
           marginLeft: attribute.marginLeft + "px",
           zIndex: props.zIndex,
+          opacity: attribute.bodyOpacity,
         }}
       >
         <Top
-          onMouseLeave={(e) => {
-            MouseLeaveTop(e);
-          }}
-          onMouseDown={(e) => MouseDownTop(e)}
-          onMouseUp={(e) => MouseUpTop(e)}
-          onMouseMove={(e) => MouseMoveTop(e)}
           style={{ opacity: attribute.opacity }}
+          onMouseEnter={(e) => {
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            mouseEnterTopOptions(setAttribute, attribute);
+          }}
+          onMouseLeave={(e) => {
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            mouseLeaveTopOptions(setAttribute, attribute);
+          }}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            mouseDwonTopOptions(attribute, e);
+          }}
+          onMouseUp={(e) => {
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            mouseUpTopOptions();
+          }}
         >
           {/* 红黄蓝options */}
           <RedTopBlock
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
               dispatch(destoryApp({ id: props.id }));
             }}
           ></RedTopBlock>
           <YellowTopBlock></YellowTopBlock>
-          <GreenTopBlock onClick={maximize}></GreenTopBlock>
+          <GreenTopBlock
+            onClick={(e) => {
+              e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
+              maximize();
+            }}
+          ></GreenTopBlock>
         </Top>
         <MemoWapperComponent
           MaximizeFlag={attribute.MaximizeFlag}

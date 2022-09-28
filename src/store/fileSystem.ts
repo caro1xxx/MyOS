@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { nanoid } from "nanoid";
+import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
+import { clickFolder } from "../utils/fileMethod";
+import { FILELIST, INITCURRENTPATH } from "../utils/ENV";
 interface File {
   fileId: string;
   fileName: string;
@@ -21,52 +22,9 @@ interface init {
 
 const initialState: init = {
   value: {
-    fileList: [
-      {
-        fileId: nanoid(),
-        fileName: "Document",
-        fileType: 0,
-        location: ["root"],
-        updateDate: "2022/02/02",
-      },
-      {
-        fileId: nanoid(),
-        fileName: "Application",
-        fileType: 0,
-        location: ["root"],
-        updateDate: "2022/02/02",
-      },
-      {
-        fileId: nanoid(),
-        fileName: "Disk",
-        fileType: 0,
-        location: ["root"],
-        updateDate: "2022/02/02",
-      },
-      {
-        fileId: nanoid(),
-        fileName: "Desktop",
-        fileType: 0,
-        location: ["root"],
-        updateDate: "2022/02/02",
-      },
-      {
-        fileId: nanoid(),
-        fileName: "Download",
-        fileType: 0,
-        location: ["root"],
-        updateDate: "2022/02/02",
-      },
-      {
-        fileId: nanoid(),
-        fileName: "MyOSConfig",
-        fileType: 0,
-        location: ["root", "Document"],
-        updateDate: "2022/02/02",
-      },
-    ],
+    fileList: FILELIST,
     currentShowFile: [],
-    currentPath: ["root"],
+    currentPath: [INITCURRENTPATH],
     recycleFile: [],
   },
 };
@@ -85,19 +43,19 @@ export const fileSystem = createSlice({
     // 删除文件
     deleteFile: (state) => {
       let res: File | null = null;
-      for (let i = 0; i < state.value.fileList.length; i++) {
+      for (let i in state.value.fileList) {
         if (state.value.fileList[i].fileId === state.value.deleteFileId) {
           res = state.value.fileList[i];
-          state.value.fileList.splice(i, 1);
+          state.value.fileList.splice(Number(i), 1);
           break;
         }
       }
-      for (let i = 0; i < state.value.currentShowFile.length; i++) {
+      for (let i in state.value.currentShowFile) {
         if (
           state.value.currentShowFile[i].fileId === state.value.deleteFileId
         ) {
           res = state.value.currentShowFile[i];
-          state.value.currentShowFile.splice(i, 1);
+          state.value.currentShowFile.splice(Number(i), 1);
           break;
         }
       }
@@ -106,81 +64,41 @@ export const fileSystem = createSlice({
     },
     // 返回上一级
     goback: (state) => {
-      let obj = { ...state.value },
-        flag = [];
+      let obj = { ...state.value };
       if (obj.currentPath.length === 1) return;
       obj.currentPath.pop();
-      // 情况当前显示文件列表
-      obj.currentShowFile = [];
-      // 依次获取文件库内的所有文件
-      for (let i = 0; i < obj.fileList.length; i++) {
-        flag = [];
-        for (let j = 0; j < obj.currentPath.length; j++) {
-          if (obj.fileList[i].location[j] === obj.currentPath[j]) {
-            if (obj.currentPath.length < obj.fileList[i].location.length) {
-              flag.push(false);
-            }
-            flag.push(true);
-          } else {
-            flag.push(false);
-          }
-        }
-        if (!flag.includes(false)) {
-          obj.currentShowFile.push(obj.fileList[i]);
-        }
-      }
+      obj = clickFolder(obj);
       state.value = obj;
     },
     // 进入文件夹
     go: (state, actions) => {
-      let obj = { ...state.value },
-        flag = [];
+      let obj = { ...state.value };
       // 先增加path
       obj.currentPath.push(actions.payload.path);
-      // 情况当前显示文件列表
-      obj.currentShowFile = [];
-      // 依次获取文件库内的所有文件
-      for (let i = 0; i < obj.fileList.length; i++) {
-        flag = [];
-        for (let j = 0; j < obj.currentPath.length; j++) {
-          if (obj.fileList[i].location[j] === obj.currentPath[j]) {
-            if (obj.currentPath.length < obj.fileList[i].location.length) {
-              flag.push(false);
-            }
-            flag.push(true);
-          } else {
-            flag.push(false);
-          }
-        }
-        if (!flag.includes(false)) {
-          obj.currentShowFile.push(obj.fileList[i]);
-        }
-      }
+      obj = clickFolder(obj);
       state.value = obj;
     },
     // 初始化root文件夹列表
     initCurrentShowFile: (state) => {
-      let obj = { ...state.value },
-        flag = [];
-      // 情况当前显示文件列表
-      obj.currentShowFile = [];
-      // 依次获取文件库内的所有文件
-      for (let i = 0; i < obj.fileList.length; i++) {
-        flag = [];
-        for (let j = 0; j < obj.currentPath.length; j++) {
-          if (obj.fileList[i].location[j] === obj.currentPath[j]) {
-            if (obj.currentPath.length < obj.fileList[i].location.length) {
-              flag.push(false);
-            }
-            flag.push(true);
-          } else {
-            flag.push(false);
-          }
-        }
-        if (!flag.includes(false)) {
-          obj.currentShowFile.push(obj.fileList[i]);
+      let obj = { ...state.value };
+      obj = clickFolder(obj);
+      state.value = obj;
+    },
+    // 恢复文件
+    restoreFile: (state, actions) => {
+      let obj = { ...state.value };
+      if (!obj.recycleFile) return;
+      let res: File | null = null;
+      for (let i in obj.recycleFile) {
+        if (obj.recycleFile[i].fileId === actions.payload.fileId) {
+          res = obj.recycleFile[i];
+          obj.recycleFile.splice(Number(i), 1);
+          break;
         }
       }
+      if (res === null) return;
+      state.value.fileList.push(res);
+      obj = clickFolder(obj);
       state.value = obj;
     },
   },
@@ -193,6 +111,7 @@ export const {
   goback,
   go,
   initCurrentShowFile,
+  restoreFile,
 } = fileSystem.actions;
 export const selectCount = (state: RootState) => state.fileState.value;
 export default fileSystem.reducer;

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { deleteFile } from "../store/fileSystem";
+import { deleteFile, restoreFile } from "../store/fileSystem";
 import { nanoid } from "nanoid";
 type Props = {};
 const Wrap = styled.div`
@@ -81,6 +81,11 @@ const RecycleBin = (props: Props) => {
               </svg>
               <span>{item.fileName}</span>
               <svg
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.nativeEvent.stopImmediatePropagation();
+                  dispatch(restoreFile({ fileId: item.fileId }));
+                }}
                 className="icon"
                 viewBox="0 0 1024 1024"
                 version="1.1"
@@ -93,21 +98,6 @@ const RecycleBin = (props: Props) => {
                   d="M396.8 200.533333l64 64L384 341.333333h298.666667c119.466667 0 213.333333 93.866667 213.333333 213.333334s-93.866667 213.333333-213.333333 213.333333H298.666667v-85.333333h384c72.533333 0 128-55.466667 128-128s-55.466667-128-128-128H170.666667l226.133333-226.133334z"
                   fill="#444444"
                   p-id="5801"
-                ></path>
-              </svg>
-              <svg
-                className="icon"
-                viewBox="0 0 1024 1024"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                p-id="6812"
-                width="15"
-                height="15"
-              >
-                <path
-                  d="M576 512l277.333333 277.333333-64 64-277.333333-277.333333L234.666667 853.333333 170.666667 789.333333l277.333333-277.333333L170.666667 234.666667 234.666667 170.666667l277.333333 277.333333L789.333333 170.666667 853.333333 234.666667 576 512z"
-                  fill="#444444"
-                  p-id="6813"
                 ></path>
               </svg>
             </RecycleFileList>

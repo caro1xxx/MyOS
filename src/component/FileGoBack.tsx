@@ -1,15 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { useAppDispatch } from "../hooks";
-import { commiteDeleteFileId, go } from "../store/fileSystem";
-type Props = {
-  fileId: string;
-  fileName: string;
-  fileType: number;
-  location: string[];
-  updateDate: string;
-};
-
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { goback } from "../store/fileSystem";
+type Props = {};
 const Wrap = styled.div`
   font-size: 10px;
   line-height: 20px;
@@ -24,49 +17,18 @@ const Wrap = styled.div`
     border-radius: 5px;
   }
 `;
-
-const Block = styled.div`
-  grid-column: span 7 / auto;
-`;
-
-const FileName = styled.div`
-  text-align: center;
-  grid-column: span 3 / auto;
-  text-align: left;
-`;
-
-const UpdateDate = styled.div`
-  grid-column: span 2 / auto;
-`;
-
-const SubFile = (props: Props) => {
+const FileGoBack = (props: Props) => {
   const dispatch = useAppDispatch();
+  const currentPath = useAppSelector(
+    (stat) => stat.fileState.value.currentPath
+  );
+
   return (
     <Wrap
       onDoubleClick={(e) => {
-        dispatch(go({ path: props.fileName }));
+        if (currentPath.length === 1) return false;
+        dispatch(goback());
       }}
-      onDrag={(e) => {
-        e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-        dispatch(commiteDeleteFileId({ id: props.fileId }));
-      }}
-      onDragEnd={(e) => {
-        e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
-      }}
-      // onDragOver={(e) => {
-      //   e.stopPropagation();
-      //   e.nativeEvent.stopImmediatePropagation();
-      // }}
-      // onDragLeave={(e) => {
-      //   e.stopPropagation();
-      //   e.nativeEvent.stopImmediatePropagation();
-      // }}
-      // onDragEnter={(e) => {
-      //   e.stopPropagation();
-      //   e.nativeEvent.stopImmediatePropagation();
-      // }}
     >
       <svg
         className="icon"
@@ -83,13 +45,9 @@ const SubFile = (props: Props) => {
           fill="#056de8"
         ></path>
       </svg>
-      <FileName draggable="true">{props.fileName}</FileName>
-      <Block></Block>
-      <UpdateDate>{props.updateDate}</UpdateDate>
-      <div>{props.fileType}</div>
-      <div style={{ overflow: "hidden" }}>{props.location}</div>
+      <div>...</div>
     </Wrap>
   );
 };
 
-export default SubFile;
+export default FileGoBack;

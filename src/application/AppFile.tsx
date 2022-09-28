@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import withAppHandle from "./withAppHandle";
-import { useAppSelector } from "../hooks";
+import { useAppSelector, useAppDispatch } from "../hooks";
 import { nanoid } from "nanoid";
 import SubFile from "../component/SubFile";
+import FileFavorites from "../component/FileFavorites";
+import RecycleBin from "../component/RecycleBin";
+import FileGoBack from "../component/FileGoBack";
 type Props = {
   borderRadius: string;
   zIndex: number;
@@ -35,25 +38,10 @@ const TableofContents = styled.div`
   height: 100%;
 `;
 
-const Path = styled.div`
-  color: #0d6efd;
-  font-size: 20px;
-  width: 100%;
-  height: 20px;
-  line-height: 20px;
-  padding-left: 10px;
-  border-left: 5px #0d6efd solid;
-  margin-bottom: 20px;
-`;
-
-const SubFileArea = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-gap: 10px;
-`;
-
 const AppFile = (props: Props) => {
-  const subFile = useAppSelector((state) => state.fileState.value);
+  const subFile = useAppSelector(
+    (state) => state.fileState.value.currentShowFile
+  );
   return (
     <Wrap
       style={{
@@ -64,14 +52,17 @@ const AppFile = (props: Props) => {
     >
       <Body>
         <Main>
-          <Path>root/</Path>
-          <SubFileArea>
+          <div>
+            <FileGoBack></FileGoBack>
             {subFile.map((item, index) => {
-              return <SubFile title={item.fileName} key={nanoid()}></SubFile>;
+              return <SubFile {...item} key={nanoid()}></SubFile>;
             })}
-          </SubFileArea>
+          </div>
         </Main>
-        <TableofContents>1</TableofContents>
+        <TableofContents>
+          <FileFavorites></FileFavorites>
+          <RecycleBin></RecycleBin>
+        </TableofContents>
       </Body>
     </Wrap>
   );

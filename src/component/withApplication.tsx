@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useAppDispatch } from "../hooks";
 import { createApp } from "../store/execute";
+import { initCurrentShowFile } from "../store/fileSystem";
 type Props = {
   zoomAnimation: string;
   applicationCode: number;
@@ -29,6 +30,8 @@ const withApplication = (WapperComponent: (props: Props) => JSX.Element) => {
 
     // 执行App
     const executeApplication = useCallback(() => {
+      // 初始化currentShowFile
+      dispatch(initCurrentShowFile());
       // 执行createApp向store新增一个App,
       // props.applicationCode:App code
       dispatch(createApp(props.applicationCode));
